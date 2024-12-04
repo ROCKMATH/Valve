@@ -1,0 +1,12 @@
+.anonce>p{
+    display: flex;
+    border: solid;
+}
+.text{
+    display: inline-block;
+    border: solid;
+}
+div>a{
+    display: inline-block;
+    border: solid;
+}

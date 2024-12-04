@@ -1,0 +1,13 @@
+footer{
+    display: flex;
+    border: solid;
+}
+footer>*{
+    display: inline-flex;
+    border: solid;
+    flex: 1;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}

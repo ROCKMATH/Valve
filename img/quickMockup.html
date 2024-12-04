@@ -1,0 +1,1207 @@
+
+<!-- saved from url=(0084)file:///C:/Users/matca/Downloads/Calesse%20Lelong%20Crambier%20groupe%20C%20(2).html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>quickMockup</title>
+		
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<script src="file:///C:/Users/matca/Downloads/scripts/jquery.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/jquery-ui.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/showdown.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/showdownUIExtensions.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/mousetrap.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/filereader.js"></script>
+		<script src="file:///C:/Users/matca/Downloads/scripts/FileSaver.js"></script>
+
+		<script src="file:///C:/Users/matca/Downloads/scripts/jqUiEditMD2HTML.js"></script>
+
+		<link href="file:///C:/Users/matca/Downloads/styles/jquery-ui.css" rel="stylesheet">
+
+
+		<style>
+			#toolbar, #widgetCollectionWrap{display:none;}
+
+			body, div{
+			padding:0;
+			margin:0;
+			}
+
+			#canvas .custom-selected.ui-resizable>.ui-resizable-handle{
+				pointer-events: auto;
+				background: rgba(0,0,0,0); /*the following stylesheet shows these again. If only html is saved (and the mockup not interactive thus, they are hidden)*/
+			}
+
+			#canvasWrap{
+				background-color: gray;
+			}
+
+			#canvas{
+				background-color: white;
+			}
+
+
+
+		</style>
+		<link href="file:///C:/Users/matca/Downloads/styles/quickMockupInteractive.css" rel="stylesheet">
+
+		<!--elements -->
+		<!-- style has an ID so we can retrieve it for exporting html and css via a script reading the innerHTML of the style -->
+		<style id="elementStyles">
+			/*all*/
+			.newMockElement, .mockElement{
+				box-sizing: border-box;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				position: relative;
+				background:rgba(255,255,255,0.8);
+				width:10em;
+			}
+			.newMockElement > div.editableArea, .mockElement > div.editableArea{
+				width: 100%;
+				box-sizing: border-box;
+			}
+
+			.newMockElement a, .mockElement a{
+				color: #0093ff;
+				pointer-events: none; /*otherwise, links in elements, markdown etc. can be clicked and lead away from the app.*/
+			}
+			.newMockElement a, .mockElement a:visited{
+				color: #0093ff /*no visted state for mockup links*/
+			}
+
+
+			.editableArea>p{
+				margin: 0 0 0 0;
+				padding: 0 0 0 0;
+			}
+
+			/*buttons*/
+			.newMockElement.button, .mockElement.button{
+				justify-content: center;
+				align-items: center;
+				display: flex;
+				border:2px solid #333;
+				border-radius:3px;
+				background:white;
+				width: 8em;
+				width: 8em;
+				height:3em;
+				box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+			}
+
+			/*Window*/
+			.newMockElement.dialogWindow, .mockElement.dialogWindow{
+				border:2px solid gray;
+				border-radius:3px;
+				width: 400px;
+				height:200px;
+			}
+
+			.newMockElement.dialogWindow > .dialogWindow-bar, .mockElement.dialogWindow > .dialogWindow-bar{
+				background-color:silver;
+				border-bottom: 2px solid #333;
+				border-radius: 3px;
+				padding:7px;
+				height:1.6em;
+			}
+
+			.newMockElement.dialogWindow > div > .dialogWindow-closeButton, .mockElement.dialogWindow > div > .dialogWindow-closeButton{
+				padding:4px;
+				font-size:1.5em;
+				margin-top: -0.4em;
+				float:right;
+			}
+
+			/*tabs*/
+			.newMockElement.tabs, .mockElement.tabs{
+				background: rgba(0,0,0,0);
+				width:30em;
+				border-bottom:1px solid rgba(0,0,0,0.3);
+			}
+
+			.newMockElement.tabs>.editableArea, .mockElement.tabs>.editableArea{
+				border-bottom: 2px solid gray;
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				margin:0;
+			}
+
+			.newMockElement.tabs>.editableArea a, .mockElement.tabs>.editableArea a{
+				pointer-events: none; /*prevent accidental navigation*/
+			}
+
+			.newMockElement.tabs>.editableArea>ul, .mockElement.tabs>.editableArea>ul{
+				box-sizing: border-box;
+				width:100%;
+				margin:0;
+				padding:0;
+			}
+
+			.newMockElement.tabs>.editableArea>ul>li, .mockElement.tabs> .editableArea>ul>li{
+				display: inline-block;
+				padding: 5px 16px;
+				border: 1px solid gray;
+				border-top-left-radius: 3px;
+				border-top-right-radius: 3px;
+				margin: 0 0 -2px 0.3em;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				background:white;
+			}
+
+			.mockElement.tabs>.editableArea>ul>li.item-highlighted, .newMockElement.tabs>.editableArea>ul>li.item-highlighted{
+				background: #DDD;
+			}
+
+			.newMockElement.label .mockElement.label{
+				width:7em;
+				background-color: transparent;
+			}
+
+			.newMockElement.link, .mockElement.link{
+				width:7em;
+				color:#0093ff;
+				text-decoration: underline;
+			}
+
+			/*headline*/
+			.newMockElement.headline>h1, .mockElement.headline>h1{
+				margin:0;
+				background-color: transparent;
+			}
+			/*paragraph*/
+			.newMockElement.paragraph>p{
+				margin:0;
+			}
+
+			/*table*/
+			.newMockElement.table, .mockElement.table{
+				width:10em;
+			}
+			.newMockElement.table table, .mockElement.table table{
+				width: 100%;
+				border-collapse: collapse;
+			}
+			.newMockElement.table table td, .mockElement.table table td, .newMockElement.table table th, .mockElement.table table th{
+				border: 1px solid gray;
+			}
+
+			.newMockElement.table table th, .mockElement.table table th{
+				border-bottom: 2px solid black;
+			}
+
+			/*just a rectangle*/
+			.newMockElement.rect , .mockElement.rect{
+				border:2px solid rgba(0,0,0,0.8);
+				width:200px;
+				height:50px;
+				background-color: transparent;
+			}
+
+			.newMockElement.grayrect , .mockElement.grayrect{
+				border:2px solid #333;
+				width:200px;
+				height:50px;
+				background-color: lightgrey;
+			}
+
+			.newMockElement.invisiblerect, .mockElement.invisiblerect {
+				width:200px;
+				height:50px;
+				background-color: transparent;
+				margin:2px;
+			}
+
+			.mockElement.invisiblerect > .desc {
+				display:none;
+			}
+
+			.newMockElement.invisiblerect, .mockElement.invisiblerect:hover, .mockElement.invisiblerect.custom-selected {
+				border:2px solid lightgrey;
+				margin:0;
+			}
+
+			.newMockElement.whiterect , .mockElement.whiterect{
+				border:2px solid rgba(150,150,150,0.05);
+				width:200px;
+				height:50px;
+				background-color: white;
+			}
+
+
+			/*optionlist*/
+
+			.newMockElement.optionRadiobutton , .mockElement.optionRadiobutton{
+				box-sizing: border-box;
+				background-color: transparent;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea li, .mockElement.optionRadiobutton .editableArea li{
+				display: block;
+			}
+
+			.newMockElement.optionRadiobutton ul, .mockElement.optionRadiobutton ul{
+				margin:0;
+				padding: 0;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea li::before, .mockElement.optionRadiobutton .editableArea li::before{
+				/*implements a simulated radio button, since uiconde circles and the "fisheye" character were inconsisted in size*/
+				content: " ";
+				display: inline-block;
+				background: white;
+				width: 0.8em;
+				height: 0.8em;
+				position: relative;
+				top: 0.1em;
+				margin: 0 0.3em 0 0;
+				padding: 0;
+				border-radius: 10em;
+				border: 2px inset gray;
+				box-sizing: border-box;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea li.item-highlighted::before, .mockElement.optionRadiobutton .editableArea li.item-highlighted::before{
+				content: "";
+				background: black;
+				background-clip: content-box;
+				padding: 0.1em;
+			}
+
+			/*Checkboxes*/
+			.newMockElement.optionCheckbox , .mockElement.optionCheckbox{
+				box-sizing: border-box;
+			}
+
+			.newMockElement.optionCheckbox .editableArea li, .mockElement.optionCheckbox .editableArea li{
+				display: block;
+			}
+
+			.newMockElement.optionCheckbox ul, .mockElement.optionCheckbox ul{
+				margin:0;
+				padding: 0;
+			}
+
+
+			.newMockElement.optionCheckbox .editableArea li::before, .mockElement.optionCheckbox .editableArea li::before{
+				content:"☐ "
+			}
+
+			.newMockElement.optionCheckbox .editableArea li.item-highlighted::before, .mockElement.optionCheckbox .editableArea li.item-highlighted::before{
+				content:"☑ ";
+			}
+
+			/*Dropdown*/
+			.dropdownList{
+				border:2px solid gray;
+				border-radius: 3px;
+				padding: 0px 0 0px 0.4em;
+				display: table;
+				background-color: white;
+			}
+
+			.dropdownList .editableArea{
+				display: table-cell;
+				text-align: center;
+				height: 100%;
+				vertical-align: middle;
+			}
+
+			.dropdownList .mockelement-dropdown-arrow{
+				border-left: 1px solid rgb(128, 128, 128);
+				padding: 0px 0.4em;
+				display: table-cell;
+				text-align: center;
+				height: 100%;
+				vertical-align: middle;
+				background: #EEE;
+
+
+			}
+			/*input Box*/
+			.newMockElement.inputbox, .mockElement.inputbox{
+			border:2px solid darkgray;
+			align-items: center;
+			display: flex;
+			border:2px solid #333;
+			padding-left:0.4em;
+			}
+
+			/*spinner*/
+			.newMockElement.spinner, .mockElement.spinner{
+			border:2px solid darkgray;
+			justify-content: center;
+			align-items: center;
+			display: flex;
+			border:2px solid #333;
+			background-color: white;
+			}
+
+			.newMockElement.spinner::before, .mockElement.spinner::before{
+				content: "▴";
+				position: absolute;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				right: 0;
+				top: 0;
+				width: 1.5em;
+				height: 50%;
+				background: lightgray;
+				font-size: 0.7em;
+			}
+
+			.newMockElement.spinner::after, .mockElement.spinner::after{
+				content:"▾";
+				position: absolute;
+				display: flex;
+				justify-content: center;
+	align-items: center;
+				right: 0px;
+				bottom: 0px;
+				width: 1.5em;
+				height: 50%;
+				background: lightgray ;
+				font-size: 0.7em;
+				box-sizing: border-box;
+				padding-bottom: 0.2em;
+				border-top: 1px solid gray;
+			}
+
+
+			/*slider*/
+			.newMockElement.slider,
+			.mockElement.slider{
+				align-items: center;
+				display:flex;
+			}
+
+			.newMockElement.slider:before,
+			.mockElement.slider::before{
+				content:" ";
+				height:0.5em;
+				width:0.5em;
+				background: white;
+				border: 3px solid #333;
+				border-radius: 10em;
+				position: relative;
+				left:3em;
+			}
+
+			.newMockElement.slider:after,
+			.mockElement.slider::after{
+				content:" ";
+				height: 2px;
+				background: #222;
+				width:100%;
+			}
+			/*loading indicator*/
+			.newMockElement.loadingIndicator,
+			.mockElement.loadingIndicator{
+				border: 1px solid gray;
+				border-radius: 2px;
+				background-color: white;
+				padding: 0;
+				justify-content: center;
+				align-items: center;
+				display: flex;
+				position: relative
+			}
+
+			.newMockElement.loadingIndicator .bar,
+			.mockElement.loadingIndicator .bar{
+				 margin: 0;
+					background-color: rgba(0, 0, 0, 0.21);
+				width: 70%;
+				display: block;
+				position: absolute;
+				height: 100%;
+				top: 0;
+				left: 0;
+				text-align: center;
+			}
+
+			/*entries vertical*/
+			.newMockElement.entries-horizontal, .mockElement.entries-horizontal{
+				background: white;
+				width:15em;
+			}
+
+			.newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea{
+				background: white;
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.entries-horizontal .editableArea ul, .mockElement.entries-horizontal .editableArea ul{
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+				padding:0;
+				display: table;
+				border-collapse: collapse;
+			}
+
+			.newMockElement.entries-horizontal ul li, .mockElement.entries-horizontal ul li{
+				display: table-cell;
+				padding: 0.2em;
+				border: 1px solid gray;
+				border-collapse: collapse;
+				margin: 0;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				text-align: center;
+				vertical-align: middle;
+			}
+
+			.mockElement.entries-horizontal ul li.item-highlighted{
+				background: #DDD;
+			}
+
+			/*entries horizontal*/
+			.newMockElement.entries-vertical, .mockElement.entries-vertical{
+				background: white;
+				width:30em;
+			}
+
+			.newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea{
+				background:white;
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.entries-vertical .editableArea ul, .mockElement.entries-vertical .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.newMockElement.entries-vertical ul li, .mockElement.entries-vertical ul li{
+				margin: 0px;
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				width: 150px;
+				padding: 0.2em;
+				flex: 1 1 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgb(128, 128, 128);
+				border-collapse: collapse;
+				margin-top: -1px;
+			}
+
+			.mockElement.entries-vertical ul li.item-highlighted{
+				background: #DDD;
+			}
+
+
+			/*boxes vertical*/
+			.newMockElement.boxes-horizontal, .mockElement.boxes-horizontal{
+				background: rgba(0,0,0,0);
+				width:15em;
+			}
+
+			.newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.boxes-horizontal .editableArea ul, .mockElement.boxes-horizontal .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: row;
+			}
+
+			.newMockElement.boxes-horizontal ul li, .mockElement.boxes-horizontal ul li{
+				padding: 0.2em;
+				border: 1px solid rgb(128, 128, 128);
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				margin: 0.2em;
+				display: flex;
+				flex: 1 1 auto;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.mockElement.boxes-horizontal ul li.item-highlighted{
+				background: #DDD;
+			}
+
+			/*boxes vertical*/
+			.newMockElement.boxes-vertical, .mockElement.boxes-vertical{
+				background: rgba(0,0,0,0);
+				width:10em;
+			}
+
+			.newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.boxes-vertical .editableArea ul, .mockElement.boxes-vertical .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.newMockElement.boxes-vertical ul li, .mockElement.boxes-vertical ul li{
+				margin: 1.5% 0 0 0;
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				width: 99%;
+				padding: 0.2em;
+				flex: 1 1 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgb(128, 128, 128);
+				border-collapse: collapse;
+			}
+
+			.mockElement.boxes-vertical ul li.item-highlighted{
+				background: #DDD;
+			}
+
+			/*iconbar*/
+
+
+			.newMockElement.boxes-iconbar-horizontal ul>li, .mockElement.boxes-iconbar-horizontal ul>li{
+				border: 2px solid rgb(128, 128, 128);
+				display: flex;
+				justify-content: center;
+				font-size: 1.7em;
+				align-items: center;
+				border-radius: 3px;
+				color: rgb(51, 51, 51);
+				flex: 1 1 0%;
+				margin: 0.1em;
+				padding: 0.1em 0.1em 0.2em;
+				background: white;
+			}
+			.newMockElement.boxes-iconbar-horizontal ul>li{
+			min-width: 1em;
+			}
+
+		/*image placeholder*/
+		.newMockElement.imageplaceholder, .mockElement.imageplaceholder{
+			color:darkgray;
+			background-color: lightgray;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			height:5em;
+		}
+
+		/*actual image*/
+		.newMockElement.actualimage, .mockElement.actualimage{
+			height:5em;
+		}
+
+		.mockElement.actualimage>p{
+			background: lightgray;
+			color:gray;
+		}
+
+		.mockElement.actualimage img{
+			width:100%;
+			height:100%;
+		}
+
+
+		/*meta: note*/
+		.newMockElement.note, .mockElement.note{
+		background: #f7ee9e;
+		background: linear-gradient(to bottom, #f7ee9e 0%,#e0d68f 99%);
+		border: 0px none;
+		box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
+		transform: rotate(-3deg);
+		width:150px;
+		height:150px;
+		}
+
+		.newMockElement.note > *, .mockElement.note > *{
+			transform: rotate(3deg); /*so the text is not rotated*/
+		}
+
+		.newMockElement.note .editableArea, .mockElement.note .editableArea{
+			padding:0.5em;
+		}
+
+		/*Meta: arrow note*/
+		.newMockElement.arrownote, .mockElement.arrownote{
+		background: #f7ee9e;
+		border: 0px none;
+		box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
+		width:150px;
+		height:30px;
+		}
+
+		.newMockElement.arrownote .editableArea, .mockElement.arrownote .editableArea{
+			padding:0.2em;
+		}
+
+		.newMockElement.arrownote::before, .mockElement.arrownote::before{
+			width: 0;
+		height: 0;
+		margin-left:-15px;
+		margin-top:0px;
+		border-style: solid;
+		border-width: 15px 15px 15px 0;
+		border-color: transparent #eae193 transparent transparent;
+	content:"";
+	position:absolute
+		}
+
+		.newMockElement.note .editableArea, .mockElement.note .editableArea{
+			padding:0.5em;
+		}
+	</style>
+</head>
+
+<body style="">
+<div id="appContainer">
+<div id="widgetCollectionWrap" class="ui-resizable"><ul id="widgetCollection">
+		<!--
+
+				Tentative Description for creating elements:
+
+					In each list Element goes a div. This Div is the Interface Element which can be dragged to the canvas.
+					Each element has the class "newMockElement". This is changed to "mockElement" when it is added to the cavas.
+					Also each element can have other classes.
+
+					In the Div there can be other nested elements.
+
+					One of these elements *can* hold text that can be edited.  This is done by adding the attribute "data-editablearea" to this element.
+
+					The way the text is edited can be customized, by adding the attribute data-editable-mode= to it. The attribute can have the following values: "markdown", "uielements", "plain". If you set nothing, markdown is assumed.
+
+					markdown: Is markdown with a table extension and the possibility to create radiobuttons via "(x)" and checkboxes via [x]
+					uielements: for creating lists where the items are seperated by a ";". List items can highlighted (item-highlighted class is added to the <li> element) by adding a "*" in front: "normal; normal; *I am Active; normal item again; …"
+					plain: plain text
+
+					DO: give your element an additional (aside the newMockupElement) class: "newMockupElement fooBarClass".
+
+					DO: Use ">" (direct child) instead of the " " (descendant operator); If elements are nested it can have strange side effects since the nested element will have styles that it did not have before.
+
+					DONT:
+					* give the element an id. The id is set by the script.
+
+				-->
+
+				<li title="button">
+					<div class="newMockElement button ui-draggable ui-draggable-handle" data-editable-content="OK" data-editable-mode="plain">
+						<span class="editableArea">OK</span>
+					</div>
+				</li>
+				<li title="tabs"><!-- Tabs -->
+					<div class="newMockElement tabs ui-draggable ui-draggable-handle" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>Tab1</li>
+								<li class="item-highlighted">Tab2</li>
+								<li>Tab3</li>
+							</ul>
+
+						</div>
+					</div>
+				</li>
+				<li title="Short text label">
+					<div class="newMockElement label ui-draggable ui-draggable-handle" data-editable-content="label" data-editable-mode="plain">
+						<div class="editableArea">Label</div>
+					</div>
+				</li>
+				<li title="a link">
+					<div class="newMockElement link ui-draggable ui-draggable-handle" data-editable-content="link" data-editable-mode="plain">
+						<div class="editableArea">Link</div>
+					</div>
+				</li>
+				<li title="checkbox list">
+					<div class="newMockElement optionCheckbox ui-draggable ui-draggable-handle" data-editable-content="option; *other option" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
+
+						</div>
+					</div>
+				</li>
+				<li title="radio-button list">
+					<div class="newMockElement optionRadiobutton ui-draggable ui-draggable-handle" data-editable-content="option; *other option" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="dropdown element">
+					<div class="newMockElement dropdownList ui-draggable ui-draggable-handle" data-editable-content="DropdownTitle" data-editable-mode="plain">
+						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
+					</div>
+				</li>
+				<li title="spinner element">
+					<div class="newMockElement spinner ui-draggable ui-draggable-handle" data-editable-content="10" data-editable-mode="plain">
+						<span class="editableArea">10</span>
+					</div>
+				</li>
+				<li title="slider element">
+					<div class="newMockElement slider ui-draggable ui-draggable-handle">
+						<span> </span>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement loadingIndicator ui-draggable ui-draggable-handle">
+						<div class="bar"></div>
+						70%
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement headline ui-draggable ui-draggable-handle" data-editable-content="headline1" data-editable-mode="plain">
+						<h1 class="editableArea">Headline1</h1>
+					</div>
+				</li>
+				<li title="Markdown-editable paragraph">
+					<div class="newMockElement paragraph ui-draggable ui-draggable-handle" data-editable-content="
+Paragraph
+(Markdown **Supported** !)">
+						<div class="editableArea">
+							Paragraph
+							(Markdown<strong> Supported</strong>!)
+						</div>
+					</div>
+				</li>
+				<li title="markdown table">
+					<div class="newMockElement table ui-draggable ui-draggable-handle" data-editable-content="
+| h1    | h2      |      h3 |
+|:------|:-------:|--------:|
+| lorem | ipsum   | dolor   |
+| first | second  | third   |
+					">
+						<div class="editableArea">
+							<table>
+							<thead>
+							<tr>
+							<th style="text-align:left;">h1</th>
+							<th style="text-align:center;">h2</th>
+							<th style="text-align:right;">h3</th>
+							</tr>
+							</thead>
+
+							<tbody>
+							<tr>
+							<td style="text-align:left;">lorem</td>
+							<td style="text-align:center;">ipsum</td>
+							<td style="text-align:right;">dolor</td>
+							</tr>
+
+							<tr>
+							<td style="text-align:left;">first</td>
+							<td style="text-align:center;">second</td>
+							<td style="text-align:right;">third</td>
+							</tr>
+
+							</tbody>
+							</table>
+						</div>
+					</div>
+				</li>
+				<li title="simple OS window"><!-- Dialog Window -->
+					<div class="newMockElement dialogWindow ui-draggable ui-draggable-handle" data-editable-content="myWindow" data-editable-mode="plain">
+						<div class="dialogWindow-bar">
+							<span class="editableArea">Title</span>
+							<span class="dialogWindow-closeButton">×</span>
+						</div>
+					</div>
+				</li>
+				<li title="a rectangle">
+					<div class="newMockElement rect ui-draggable ui-draggable-handle">
+					</div>
+				</li>
+				<li title="a gray rectangle">
+					<div class="newMockElement grayrect ui-draggable ui-draggable-handle">
+					</div>
+				</li>
+				<li title="an invisible rectangle">
+					<div class="newMockElement invisiblerect ui-draggable ui-draggable-handle">
+						<div class="desc">Invisible Rect<br>Use for grouping</div>
+					</div>
+				</li>
+				<li title="horizontal list">
+					<div class="newMockElement entries-horizontal ui-draggable ui-draggable-handle" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+								<li class="item-highlighted">Entry3</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="vertical list">
+					<div class="newMockElement entries-vertical ui-draggable ui-draggable-handle" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+								<li class="item-highlighted">Entry3</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="horizontal boxes list (e.g. for toolbars)">
+					<div class="newMockElement boxes-horizontal ui-draggable ui-draggable-handle" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+								<li class="item-highlighted">Entry3</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="vertical boxes list (e.g. for toolbars)">
+					<div class="newMockElement boxes-vertical ui-draggable ui-draggable-handle" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+								<li class="item-highlighted">Entry3</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="horizontal boxes for toolbars">
+					<div class="newMockElement boxes-horizontal boxes-iconbar-horizontal ui-draggable ui-draggable-handle" data-editable-content="☰;⌂;⚑; ⚙; ✂;✐;✔;✘;↶;↷;◂;▸; ▴;▾" data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>☰</li><li>⌂</li><li>⚑</li><li> ⚙</li><li> ✂</li><li>✐</li><li>✔</li><li>✘</li><li>↶</li><li>↷</li><li>◂</li><li>▸</li><li> ▴</li><li>▾</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+
+				<li title="image placeholder">
+					<div class="newMockElement imageplaceholder ui-draggable ui-draggable-handle" data-editable-content="Image" data-editable-mode="plain">
+						<div class="editableArea">
+						Image
+						</div>
+					</div>
+				</li>
+
+				<li title="add markdown link to image">
+					<div class="newMockElement actualimage ui-draggable ui-draggable-handle" data-editable-content="![]()&lt;!-- add URL to image in the round brackets --&gt;" data-editable-mode="markdown">
+						<div class="editableArea">
+						Image (double click to add markdown link to image)
+						</div>
+					</div>
+				</li>
+
+				<li title="Markdown-editable sticky note">
+					<div class="newMockElement meta-element note ui-draggable ui-draggable-handle" data-editable-content="Notes here!" data-editable-mode="markdown">
+						<div class="editableArea">
+						</div>
+					</div>
+				</li>
+
+				<li title="editable sticky arrow-note">
+					<div class="newMockElement meta-element arrownote ui-draggable ui-draggable-handle" data-editable-content="Notes here!" data-editable-mode="plain">
+						<div class="editableArea">
+						note!
+						</div>
+					</div>
+				</li>
+		</ul><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div></div>
+
+
+		<div id="canvasWrap"><div style="height: 2000px; width: 2000px;" class="ui-droppable" id="canvas">
+				<!-- this is example content-->
+
+
+
+<!-- example content end -->
+
+		
+
+
+			<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Accueil" data-editable-mode="plain" id="mockElement_54452082566917" style="position: absolute; inset: 7.4px auto auto 61.2px; z-index: auto; width: 160px; height: 45px;">
+						<h1 class="editableArea" id="editableArea_54452082566917">Accueil</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_8826193983716" style="position: absolute; inset: 51.925px auto auto 1292.85px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_66111577138958" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_65175533976077" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_65175533976077">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_48649578701117" style="position: absolute; top: 8.66667px; left: 18.8333px; width: 104.867px;">
+						<span class="editableArea" id="editableArea_48649578701117">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_16606068090959" style="position: absolute; inset: 9.575px auto auto 408.8px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_16606068090959">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_34458428732850" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_61773833380785" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_61773833380785">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_26341248156055" style="position: absolute; inset: 13.55px auto auto 404.55px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_26341248156055">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_5749908699449" style="position: absolute; inset: 10.2px auto auto 24.25px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_5749908699449">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_70200729720278" style="position: absolute; inset: 705.675px auto auto 54.725px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_70200729720278">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_72076560664801" style="position: absolute; top: 708.475px; left: 215.55px;">
+						<span class="editableArea" id="editableArea_72076560664801">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page formulaire location" data-editable-mode="plain" id="mockElement_56926522497158" style="position: absolute; inset: 713.075px auto auto 362.1px; z-index: auto; width: 137px; height: 70px;">
+						<div class="editableArea" id="editableArea_56926522497158">Renvoie à la page formulaire location</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="O" data-editable-mode="plain" id="mockElement_58005690441452" style="position: absolute; inset: 110.275px auto auto 538.6px; width: 19px; height: 565px; z-index: auto;">
+						<span class="editableArea" id="editableArea_58005690441452">O</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 1" data-editable-mode="plain" id="mockElement_13118322534960" style="position: absolute; inset: 134px auto auto 45.225px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_13118322534960">Annonce 1</div>
+					<div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="nom prenom telephone email horaires lieux nombre place type véhicule" data-editable-mode="plain" id="mockElement_58719925278378" style="position: absolute; inset: 13.9453px auto auto 15.7266px; z-index: auto; width: 303px; height: 66px;">
+						<span class="editableArea" id="editableArea_58719925278378">nom prenom telephone email horaires lieux nombre place type véhicule</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 2" data-editable-mode="plain" id="mockElement_35710603890759" style="position: absolute; inset: 253.6px auto auto 47.775px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_35710603890759">Annonce 2</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 3" data-editable-mode="plain" id="mockElement_86588585347353" style="position: absolute; inset: 370.4px auto auto 47.6px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_86588585347353">Annonce 3</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 4" data-editable-mode="plain" id="mockElement_8554736291907" style="position: absolute; inset: 488.2px auto auto 48.4px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_8554736291907">Annonce 4</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Covoiturage" data-editable-mode="plain" id="mockElement_4815689848440" style="position: absolute; inset: 7.6px auto auto 683.4px; z-index: auto; width: 160px; height: 45px;">
+						<h1 class="editableArea" id="editableArea_4815689848440">Covoiturage</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Location moyen de transport" data-editable-mode="plain" id="mockElement_54683430469809" style="position: absolute; inset: 5.6px auto auto 1309.4px; z-index: auto; width: 489px; height: 45px;">
+						<h1 class="editableArea" id="editableArea_54683430469809">Location moyen de transport</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_42802496195961" style="position: absolute; inset: 1015.53px auto auto 670.65px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_19910592011345" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_28719770566430" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_28719770566430">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_77749034597391" style="position: absolute; inset: 7.84998px auto auto 16px; width: 105px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_77749034597391">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_1392145705901" style="position: absolute; inset: 9px auto auto 407px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_1392145705901">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_62189591756128" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_42226579233233" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_42226579233233">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_96504507083187" style="position: absolute; inset: 11.95px auto auto 406.75px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_96504507083187">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_21750109341852" style="position: absolute; inset: 6.75px auto auto 14.65px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_21750109341852">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_86071743385590" style="position: absolute; inset: 116.275px auto auto 43.775px; width: 497px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_86071743385590">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton pour envoyer le formulaire" data-editable-mode="plain" id="mockElement_3066441280412" style="position: absolute; inset: 713.25px auto auto 44.125px; z-index: auto; width: 183px; height: 48px;">
+						<span class="editableArea" id="editableArea_3066441280412">Boutton pour envoyer le formulaire</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Nom" data-editable-mode="plain" id="mockElement_40367918769366" style="position: absolute; inset: 201.85px auto auto 50.2749px; z-index: auto; width: 140.8px; height: 27.8px;">
+						<span class="editableArea" id="editableArea_40367918769366">Nom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Prenom" data-editable-mode="plain" id="mockElement_28532846644840" style="position: absolute; inset: 244.175px auto auto 52.5499px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_28532846644840">Prenom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Numero de Téléphone" data-editable-mode="plain" id="mockElement_72143865890153" style="position: absolute; inset: 290.35px auto auto 54.725px; z-index: auto; width: 185px; height: 28px;">
+						<span class="editableArea" id="editableArea_72143865890153">Numero de Téléphone</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Horaire" data-editable-mode="plain" id="mockElement_57959048722670" style="position: absolute; inset: 340.5px auto auto 54.85px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_57959048722670">Horaire</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Lieux" data-editable-mode="plain" id="mockElement_10925098470316" style="position: absolute; inset: 389.675px auto auto 55.975px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_10925098470316">Lieux</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Nombre de place" data-editable-mode="plain" id="mockElement_89173086192382" style="position: absolute; inset: 452.85px auto auto 60.1px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_89173086192382">Nombre de place</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="spinner ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="10" data-editable-mode="plain" id="mockElement_90526193919571" style="position: absolute; inset: 456.05px auto auto 218.375px; z-index: auto; width: 160px; height: 26px;">
+						<span class="editableArea" id="editableArea_90526193919571">10</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Type de véhicule" data-editable-mode="plain" id="mockElement_24143944576892" style="position: absolute; inset: 510.225px auto auto 63.375px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_24143944576892">Type de véhicule</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="dropdownList ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable custom-selected" data-editable-content="liste" data-editable-mode="plain" id="mockElement_23939678140936" style="position: absolute; top: 514.475px; left: 224.05px;">
+						<span class="editableArea" id="editableArea_23939678140936">liste</span><span class="mockelement-dropdown-arrow">▾</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_51497205350181" style="position: absolute; inset: 1015.53px auto auto 1294.45px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_30715603754177" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_71695742761504" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_71695742761504">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_8909308160573" style="position: absolute; top: 8.66667px; left: 18.8333px; width: 104.867px;">
+						<span class="editableArea" id="editableArea_8909308160573">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_86631732526194" style="position: absolute; inset: 10px auto auto 398.2px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_86631732526194">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_493295492072" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_19732775028681" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_19732775028681">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_72153489248824" style="position: absolute; inset: 11.15px auto auto 410.15px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_72153489248824">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_20987783179383" style="position: absolute; inset: 7.59998px auto auto 16.65px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_20987783179383">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton pour envoyer le formulaire" data-editable-mode="plain" id="mockElement_65604235709840" style="position: absolute; inset: 712.65px auto auto 42.725px; z-index: auto; width: 183px; height: 48px;">
+						<span class="editableArea" id="editableArea_65604235709840">Boutton pour envoyer le formulaire</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_65428389586412" style="position: absolute; inset: 117.625px auto auto 42.35px; width: 497px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_65428389586412">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Nom" data-editable-mode="plain" id="mockElement_87856578147329" style="position: absolute; inset: 208px auto auto 51.6px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_87856578147329">Nom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Prenom" data-editable-mode="plain" id="mockElement_70191383233509" style="position: absolute; inset: 260.35px auto auto 53.925px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_70191383233509">Prenom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Numero de Téléphone" data-editable-mode="plain" id="mockElement_7987424219380" style="position: absolute; inset: 315.5px auto auto 53.05px; z-index: auto; width: 185px; height: 28px;">
+						<span class="editableArea" id="editableArea_7987424219380">Numero de Téléphone</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Type de véhicule" data-editable-mode="plain" id="mockElement_31562997941443" style="position: absolute; inset: 369.175px auto auto 59.775px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_31562997941443">Type de véhicule</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="dropdownList ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="liste" data-editable-mode="plain" id="mockElement_553802342638" style="position: absolute; top: 370.475px; left: 218.25px;">
+						<span class="editableArea" id="editableArea_553802342638">liste</span><span class="mockelement-dropdown-arrow">▾</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="spinner ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="10" data-editable-mode="plain" id="mockElement_6007030322329" style="position: absolute; top: 421.675px; left: 223.25px;">
+						<span class="editableArea" id="editableArea_6007030322329">10</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Prix location" data-editable-mode="plain" id="mockElement_38040685112553" style="position: absolute; inset: 421.55px auto auto 61.15px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_38040685112553">Prix location</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Lieux d&#39;échange" data-editable-mode="plain" id="mockElement_36870156600210" style="position: absolute; inset: 471.375px auto auto 62.975px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_36870156600210">Lieux d'échange</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Image du véhicule" data-editable-mode="plain" id="mockElement_52312501955949" style="position: absolute; inset: 523.75px auto auto 63px; height: 120px; z-index: auto; width: 160px;">
+						<div class="editableArea" id="editableArea_52312501955949">Image du véhicule</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Formulaire location" data-editable-mode="plain" id="mockElement_21106268849139" style="position: absolute; inset: 964px auto auto 1303.8px; z-index: auto; width: 330px; height: 45px;">
+						<h1 class="editableArea" id="editableArea_21106268849139">Formulaire location</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_3805229529545" style="position: absolute; inset: 48.925px auto auto 673.85px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_78241061029469" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_72895578837411" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_72895578837411">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_3338879084325" style="position: absolute; top: 8.66667px; left: 18.8333px; width: 104.867px;">
+						<span class="editableArea" id="editableArea_3338879084325">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_48127818290027" style="position: absolute; inset: 10.75px auto auto 409px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_48127818290027">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_34434913574643" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_59546837623177" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_59546837623177">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_92198231705542" style="position: absolute; inset: 14.95px auto auto 399.925px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_92198231705542">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_90053839806918" style="position: absolute; inset: 10.375px auto auto 39.4249px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_90053839806918">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_27533804544308" style="position: absolute; inset: 700.875px auto auto 56.95px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_27533804544308">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_47104124188294" style="position: absolute; top: 701.675px; left: 215.75px;">
+						<span class="editableArea" id="editableArea_47104124188294">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page Formulaire covoiturage" data-editable-mode="plain" id="mockElement_79302297636761" style="position: absolute; inset: 707.075px auto auto 361.125px; z-index: auto; width: 137px; height: 73px;">
+						<div class="editableArea" id="editableArea_79302297636761">Renvoie à la page Formulaire covoiturage</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="O" data-editable-mode="plain" id="mockElement_70124225552578" style="position: absolute; inset: 120.075px auto auto 537.4px; width: 19px; height: 565px; z-index: auto;">
+						<span class="editableArea" id="editableArea_70124225552578">O</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 1" data-editable-mode="plain" id="mockElement_31638224193274" style="position: absolute; inset: 141.8px auto auto 51.025px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_31638224193274">Annonce 1</div>
+					<div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="nom prenom telephone email horaires lieux nombre place type véhicule" data-editable-mode="plain" id="mockElement_69300558914766" style="position: absolute; inset: 13.1484px auto auto 21.9375px; z-index: auto; width: 303px; height: 66px;">
+						<span class="editableArea" id="editableArea_69300558914766">nom prenom telephone email horaires lieux nombre place type véhicule</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 2" data-editable-mode="plain" id="mockElement_86983807157788" style="position: absolute; inset: 251.4px auto auto 51.6px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_86983807157788">Annonce 2</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 3" data-editable-mode="plain" id="mockElement_72510833055082" style="position: absolute; inset: 366.8px auto auto 54.975px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_72510833055082">Annonce 3</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Annonce 4" data-editable-mode="plain" id="mockElement_40758324384357" style="position: absolute; inset: 483.4px auto auto 55.6px; width: 462px; height: 91px; z-index: auto;">
+						<div class="editableArea" id="editableArea_40758324384357">Annonce 4</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_58757453915606" style="position: absolute; inset: 1015.73px auto auto 54.65px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_2565371202220" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_6494102125243" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_6494102125243">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_91434073267183" style="position: absolute; top: 8.66667px; left: 18.8333px; width: 104.867px;">
+						<span class="editableArea" id="editableArea_91434073267183">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_33476003224389" style="position: absolute; inset: 10px auto auto 398.2px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_33476003224389">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_29002654069265" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_23058296951520" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_23058296951520">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_6518114914120" style="position: absolute; inset: 13.925px auto auto 411.975px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_6518114914120">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_45334225432195" style="position: absolute; inset: 7.59998px auto auto 22.65px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_45334225432195">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton pour envoyer le formulaire" data-editable-mode="plain" id="mockElement_89889318828809" style="position: absolute; inset: 712.65px auto auto 42.725px; z-index: auto; width: 183px; height: 48px;">
+						<span class="editableArea" id="editableArea_89889318828809">Boutton pour envoyer le formulaire</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_4161832842089" style="position: absolute; inset: 117.625px auto auto 42.35px; width: 497px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_4161832842089">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Nom" data-editable-mode="plain" id="mockElement_72848922550731" style="position: absolute; inset: 205.8px auto auto 49.45px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_72848922550731">Nom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Signalement problème" data-editable-mode="plain" id="mockElement_97565651450674" style="position: absolute; inset: 369.3px auto auto 50.05px; z-index: auto; width: 497.8px; height: 173.8px;">
+						<span class="editableArea" id="editableArea_97565651450674">Signalement problème</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Numero de Téléphone" data-editable-mode="plain" id="mockElement_64586749042189" style="position: absolute; inset: 323.475px auto auto 54.1px; z-index: auto; width: 185px; height: 28px;">
+						<span class="editableArea" id="editableArea_64586749042189">Numero de Téléphone</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Prenom" data-editable-mode="plain" id="mockElement_17312478105256" style="position: absolute; inset: 268.35px auto auto 50.95px; z-index: auto; width: 141px; height: 28px;">
+						<span class="editableArea" id="editableArea_17312478105256">Prenom</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Singalement de problème" data-editable-mode="plain" id="mockElement_89308334982258" style="position: absolute; inset: 960.4px auto auto 69.2px; z-index: auto; width: 432px; height: 45px;">
+						<h1 class="editableArea" id="editableArea_89308334982258">Singalement de problème</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="mockElement_26761610563949" style="position: absolute; inset: 51.525px auto auto 55.425px; z-index: auto; width: 584px; height: 861px;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_63192882492349" style="position: absolute; top: 12.4667px; left: 12.3333px; width: 554.867px; height: 70.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Hearder" data-editable-mode="plain" id="mockElement_91396448706649" style="position: absolute; inset: 11.5833px auto auto 215.067px; width: 135px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_91396448706649">Hearder</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="logo" data-editable-mode="plain" id="mockElement_45013590582878" style="position: absolute; inset: 10.05px auto auto 19.2px; width: 105px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_45013590582878">logo</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_80500745639360" style="position: absolute; top: 11.225px; left: 404.425px;">
+						<span class="editableArea" id="editableArea_80500745639360">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="grayrect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" id="mockElement_28496204302172" style="position: absolute; top: 781px; left: 14.3333px; width: 555.867px; height: 59.8667px;">
+					<div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Footer" data-editable-mode="plain" id="mockElement_70823929928341" style="position: absolute; inset: 9.04999px auto auto 221.067px; width: 109px; z-index: auto; height: 45px;">
+						<h1 class="editableArea" id="editableArea_70823929928341">Footer</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_12645181739448" style="position: absolute; inset: 16.175px auto auto 389.175px; z-index: auto; width: 127px; height: 32px;">
+						<span class="editableArea" id="editableArea_12645181739448">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text Contact" data-editable-mode="plain" id="mockElement_54987637093556" style="position: absolute; inset: 11.425px auto auto 32.5px; height: 40px; width: 137px; z-index: auto;">
+						<span class="editableArea" id="editableArea_54987637093556">Text Contact</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_11816227693599" style="position: absolute; inset: 109.675px auto auto 44px; width: 497.8px; z-index: auto; height: 48px;">
+						<span class="editableArea" id="editableArea_11816227693599">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Image" data-editable-mode="plain" id="mockElement_93312462576795" style="position: absolute; inset: 227.977px auto auto 67.8516px; height: 135px; width: 144px; z-index: auto;">
+						<div class="editableArea" id="editableArea_93312462576795">Image</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_51085329534200" style="position: absolute; inset: 264.844px auto auto 248.883px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_51085329534200">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_71969882634681" style="position: absolute; inset: 266.859px auto auto 405.891px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_71969882634681">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Image" data-editable-mode="plain" id="mockElement_20595397192963" style="position: absolute; inset: 408.773px auto auto 70.5px; height: 132px; width: 142px; z-index: auto;">
+						<div class="editableArea" id="editableArea_20595397192963">Image</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Text" data-editable-mode="plain" id="mockElement_22867994499566" style="position: absolute; inset: 440.836px auto auto 244.898px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_22867994499566">Text</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Boutton" data-editable-mode="plain" id="mockElement_22008712644569" style="position: absolute; inset: 438.234px auto auto 408.305px; z-index: auto; width: 128px; height: 48px;">
+						<span class="editableArea" id="editableArea_22008712644569">Boutton</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="dialogWindow ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Actualités" data-editable-mode="plain" id="mockElement_22053885864335" style="position: absolute; inset: 585.914px auto auto 55.9688px; z-index: auto; width: 478px; height: 164px;">
+						<div class="dialogWindow-bar">
+							<span class="editableArea" id="editableArea_22053885864335">Actualités</span>
+							<span class="dialogWindow-closeButton">×</span>
+						</div>
+					<div class="button ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="text Promotion / évènements ect" data-editable-mode="plain" id="mockElement_26793800292371" style="position: absolute; inset: 56.5312px auto auto 19.9688px; z-index: auto; width: 207px; height: 87px;">
+						<span class="editableArea" id="editableArea_26793800292371">text Promotion / évènements ect</span>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="imageplaceholder ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Image" data-editable-mode="plain" id="mockElement_36895440280247" style="position: absolute; inset: 57.3984px auto auto 281.602px; z-index: auto; width: 160px; height: 80px;">
+						<div class="editableArea" id="editableArea_36895440280247">Image</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page Singalement de problème" data-editable-mode="plain" id="mockElement_51541366901552" style="position: absolute; inset: 852px auto auto 602.975px; z-index: auto; width: 137px; height: 73px;">
+						<div class="editableArea" id="editableArea_51541366901552">Renvoie à la page Singalement de problème</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page Accuiel" data-editable-mode="plain" id="mockElement_79255415238199" style="position: absolute; inset: 90.175px auto auto 614.2px; z-index: auto; width: 105px; height: 57px;">
+						<div class="editableArea" id="editableArea_79255415238199">Renvoie à la page Accuiel</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Scroll" data-editable-mode="plain" id="mockElement_40049384190954" style="position: absolute; inset: 421.6px auto auto 1248.6px; z-index: auto; width: 52px; height: 33px;">
+						<div class="editableArea" id="editableArea_40049384190954">Scroll</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Formulaire covoiturage" data-editable-mode="plain" id="mockElement_53971886558065" style="position: absolute; inset: 961px auto auto 688.8px; z-index: auto; width: 374px; height: 48px;">
+						<h1 class="editableArea" id="editableArea_53971886558065">Formulaire covoiturage</h1>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page Covoiturage" data-editable-mode="plain" id="mockElement_24548987343311" style="position: absolute; inset: 333.398px auto auto 609.375px; z-index: auto; width: 137px; height: 57px;">
+						<div class="editableArea" id="editableArea_24548987343311">Renvoie à la page Covoiturage</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Email, numero de telephone de la société" data-editable-mode="plain" id="mockElement_37765010602861" style="position: absolute; inset: 884.695px auto auto 234.984px; width: 111px; z-index: auto; height: 101px;">
+						<div class="editableArea" id="editableArea_37765010602861">Email, numero de telephone de la société</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div class="meta-element arrownote ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Renvoie à la page location" data-editable-mode="plain" id="mockElement_39228134712789" style="position: absolute; inset: 504.375px auto auto 611.367px; z-index: auto; width: 137px; height: 57px;">
+						<div class="editableArea" id="editableArea_39228134712789">Renvoie à la page location</div>
+					<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div></div></div>
+
+	<div id="toolbar">
+		<input type="file" id="loadFile" style="display:none">
+		<button id="loadFileButton">Open</button>
+		<button id="saveFile">Save</button>
+
+		<button class="delete-element-button" title="deletes the currently selected element (del)">✖ Delete Element</button>
+		<button class="undelete-element-button" title="undeletes most recently deleted element (Ctrl+Z)">↶</button>
+		<button class="duplicate-element-button" title="duplicates currently selected element (Ctrl+D)">⚭ Duplicate Element</button>
+		<button class="change-canvasize-button" title="change size of the area you place elements on">⇲ Change Canvas Size</button>
+	<button title="exports to codepen. »Save« on codepen to get a sharable URL">↗ to Codepen</button></div>
+
+
+	
+
+</div>
+
+<script src="file:///C:/Users/matca/Downloads/scripts/webedit.js"></script>
+
+
+
+
+<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable ui-resizable" tabindex="-1" role="dialog" aria-describedby="changeCanvasSizeDialog" style="display: none; position: absolute;" aria-labelledby="ui-id-1"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix ui-draggable-handle"><span id="ui-id-1" class="ui-dialog-title">&nbsp;</span><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" title="Close"><span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">Close</span></button></div><div id="changeCanvasSizeDialog" class="dialog ui-dialog-content ui-widget-content" style="display: block;">
+	<p>Change the size of the Canvas</p>
+	<label>Width:<br><input type="text" name="width"></label><br>
+	<label>Height:<br><input type="text" name="height"></label>
+	</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text">OK</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text">Cancel</span></button></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div></body></html>

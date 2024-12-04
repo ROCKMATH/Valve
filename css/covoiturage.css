@@ -1,0 +1,93 @@
+.anonce>p{
+    display: flex;
+    border: solid;
+}
+header{
+    border: solid;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.text{
+    display: inline-block;
+    border: solid;
+}
+div{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 25px ;
+}
+div>section{
+    display: flex;
+    justify-content: center;
+    border: solid;
+    align-content: space-around;
+}
+div>a{
+    display: inline-block;
+    border: solid;
+}
+.home-button { 
+    background-color: #4CAF50;
+    border: none; 
+    color: white; 
+    padding: 15px 32px; 
+    text-align: center;
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 16px; 
+    margin: 4px 2px; 
+    cursor: pointer;
+    border-radius: 12px;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+footer {
+    background-color: red;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer_container {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 20px;
+}
+
+.footer_section {
+    margin-bottom: 20px;
+}
+
+footer h2 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+footer li {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+
+
