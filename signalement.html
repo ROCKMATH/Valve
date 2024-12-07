@@ -4,31 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./css/signalement.css">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/footer.css">
 </head>
 <body>
-    <p>texte</p>
+    <header>
+        <img src="./img/Valve_logo.svg.png" alt="image logo IUT">
+        <button class="home-button" onclick="location.href='index.html'">Page d'accueil</button>
+    </header>
 
-    <form name="form_location">
-        <ul>
-            <li>
-                <label for="Nom">Nom</label>
-                <input type="text">
-            </li>
-            <li>
-                <label for="Prenom">Prenom</label>
-                <input type="text">
-            </li>
-            <li>
-                <label for="Num_tel">Numéro de Téléphone</label>
-                <input type="num">
-            </li>
-            <li>
-                <label for="signalement">signalement</label>
-                <input type="search">
-            </li>
-        </ul>
-        <label for="valider">Envoyer le formulaire</label>
-        <input type="submit">
-    </form>
+    <div class="conteneur">
+        <form name="form_location">
+            <ul>
+                <li>
+                    <label for="Nom">Nom</label>
+                    <input type="text">
+                </li>
+                <li>
+                    <label for="Prenom">Prenom</label>
+                    <input type="text">
+                </li>
+                <li>
+                    <label for="Num_tel">Numéro de Téléphone</label>
+                    <input type="num">
+                </li>
+                <li>
+                    <label for="signalement">signalement</label>
+                    <input type="search">
+                </li>
+            </ul>
+            <label for="valider">Envoyer le formulaire</label>
+            <input type="submit">
+        </form>
+    </div>
+    
+
+    <footer>
+        <div class="footer_container">
+            <h1>Valve Corporation</h1>
+            <div class="footer_section">
+                <h2>Contact</h2>
+                <ul>
+                    <li><a href="#">People</a></li>
+                    <li><a href="#">Press Inquiries</a></li>
+                </ul>
+            </div>
+            <div class="footer_section">
+                <h2>Stuff</h2>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Jobs</a></li>
+                    <li><a href="#">Steam Partners</a></li>
+                    <li><a href="#">Publications</a></li>
+                </ul>
+            </div>
+            <div class="footer_section">
+                <h2>More Stuff</h2>
+                <ul>
+                    <li><a href="#">Site Terms of Use</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Legal</a></li>
+                </ul>
+            </div>
+            <img src="img/steam_logo_footer.png">
+            <img src="img/steamworks_logo_footer.png">
+        </div>
+        </footer>
 </body>
 </html>
