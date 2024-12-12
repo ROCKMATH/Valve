@@ -9,4 +9,8 @@ body {
 
 .conteneur {
     flex: 1 0 auto;
+    margin: 3% 10%;
+}
+h1{
+    text-align: center;
 }

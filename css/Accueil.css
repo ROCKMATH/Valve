@@ -18,7 +18,7 @@ h2{
 .conteneur div{
     display: flex;
     border: solid;
-    margin-bottom: 12px;
+    margin: 3% 10%;
 }
 .conteneur img{
     display: block;
@@ -30,7 +30,6 @@ h2{
     align-items: center;
     justify-content: center;
 }
-div > img{
-    width: 100px;
-    height: 100px;
+.conteneur > div{
+    justify-content: space-between; 
 }
